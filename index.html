@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#7ee8fa">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Тест: Идея для проекта (часть 1) — 3 класс</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0;
+    padding:0;
+    -webkit-text-size-adjust:100%;
+    text-size-adjust:100%;
+  }
+  body{
+    padding:8px;
+    font-family:'Comic Sans MS','Trebuchet MS',Verdana,sans-serif;
+    background:linear-gradient(135deg,#7ee8fa 0%,#eec0c6 50%,#ffe98a 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+    min-height:100dvh;
+    color:#243447;
+    overscroll-behavior:none;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom);}
+
+  .screen{
+    display:none;
+    background:#ffffff;
+    border-radius:20px;
+    padding:16px 14px 20px;
+    box-shadow:0 8px 24px rgba(0,0,0,.22);
+    border:4px solid #ffffff;
+  }
+  .screen.active{display:block;animation:pop .25s ease;}
+  @keyframes pop{from{transform:scale(.97);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* ---------- ЭКРАН 1: АВТОРИЗАЦИЯ ---------- */
+  .logo{font-size:44px;text-align:center;margin:2px 0 4px;line-height:1;}
+  h1{font-size:22px;text-align:center;margin:0 0 6px;color:#2c3e50;line-height:1.25;}
+  .subtitle{text-align:center;font-size:15px;color:#5d6d7e;margin-bottom:20px;line-height:1.35;}
+  #name-input{
+    display:block;
+    width:100%;
+    margin:0 auto 18px;
+    border:3px solid #2ecc71;
+    background-color:#f0fff4;
+    padding:14px;
+    font-size:22px;
+    text-align:center;
+    border-radius:14px;
+    font-family:inherit;
+    outline:none;
+    color:#1e5631;
+  }
+  #name-input:focus{box-shadow:0 0 0 5px rgba(46,204,113,.25);}
+
+  .big-btn{
+    display:block;
+    width:100%;
+    padding:16px 20px;
+    font-size:20px;
+    font-weight:bold;
+    font-family:inherit;
+    color:#fff;
+    background:linear-gradient(180deg,#2ecc71,#27ae60);
+    border:none;
+    border-radius:16px;
+    cursor:pointer;
+    box-shadow:0 5px 0 #1e8449;
+    transition:.12s;
+    touch-action:manipulation;
+    min-height:56px;
+  }
+  .big-btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 2px 0 #1e8449;}
+  .big-btn:disabled{background:#cfd8dc;box-shadow:0 5px 0 #b0bec5;cursor:not-allowed;color:#90a4ae;}
+
+  /* ---------- ЭКРАН ТЕСТА ---------- */
+  .quiz-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+  }
+  .badge{
+    background:#ffe082;border:2px solid #f9a825;color:#7a5b00;
+    font-weight:bold;font-size:13px;padding:5px 10px;border-radius:999px;
+    white-space:nowrap;
+  }
+  .counter{font-size:13px;font-weight:bold;color:#37474f;white-space:nowrap;}
+  .score-live{
+    background:#e8fbee;border:2px solid #2ecc71;color:#1e8449;
+    font-weight:bold;font-size:13px;padding:5px 10px;border-radius:999px;
+    transition:.2s;white-space:nowrap;
+  }
+  .score-live.bump{transform:scale(1.15);background:#c8f7d4;}
+  .who{font-size:13px;color:#78909c;text-align:right;width:100%;margin-top:2px;}
+
+  .progress{height:12px;background:#e6eef5;border-radius:999px;overflow:hidden;margin-bottom:16px;border:2px solid #d6e4f0;}
+  .progress > div{height:100%;width:0;background:linear-gradient(90deg,#4fc3f7,#2ecc71);transition:width .3s;}
+
+  .question-text{font-size:20px;font-weight:bold;line-height:1.35;margin:2px 0 16px;color:#1a2b3c;}
+  .hint{font-size:15px;color:#5d6d7e;margin-bottom:12px;line-height:1.35;}
+
+  .options{display:flex;flex-direction:column;gap:10px;}
+  .option-btn{
+    font-family:inherit;font-size:17px;text-align:left;padding:12px 14px;
+    border:3px solid #90caf9;background:#f2f9ff;border-radius:14px;cursor:pointer;
+    transition:.15s;color:#1a2b3c;
+    display:flex;align-items:center;gap:10px;
+    touch-action:manipulation;
+    min-height:64px;
+    width:100%;
+    word-break:break-word;
+  }
+  .option-btn:active:not(:disabled){background:#e1f3ff;transform:scale(.98);}
+  .option-btn.correct{background:#d6f8d6;border-color:#2ecc71;color:#1e7a3c;}
+  .option-btn.wrong{background:#ffdede;border-color:#e74c3c;color:#a5281b;}
+  .option-btn:disabled{cursor:default;}
+
+  /* Крупные иконки клавиш — адаптивные */
+  .key-icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:52px;height:52px;padding:0 10px;
+    font-size:30px;font-weight:bold;line-height:1;
+    background:#ffffff;border:3px solid #607d8b;border-bottom:5px solid #607d8b;
+    border-radius:11px;color:#263238;
+    box-shadow:0 3px 5px rgba(0,0,0,.15);
+    flex:0 0 auto;
+  }
+  .key-label{font-size:17px;font-weight:bold;line-height:1.2;}
+  .key-sub{font-size:13px;color:#546e7a;font-weight:normal;line-height:1.2;}
+
+  /* ---------- СОПОСТАВЛЕНИЕ ---------- */
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .match-col{display:flex;flex-direction:column;gap:8px;}
+  .match-item{
+    font-family:inherit;font-size:15px;padding:12px 8px;border-radius:12px;
+    border:3px solid #b39ddb;background:#f6f1ff;cursor:pointer;color:#1a2b3c;
+    transition:.15s;
+    touch-action:manipulation;
+    min-height:60px;
+    word-break:break-word;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    line-height:1.25;
+  }
+  .match-item:active:not(.done){background:#ede4ff;}
+  .match-item.selected{background:#ffe082;border-color:#f9a825;transform:scale(1.03);}
+  .match-item.done{background:#d6f8d6;border-color:#2ecc71;color:#1e7a3c;cursor:default;}
+  .match-item.flash{background:#ffdede;border-color:#e74c3c;}
+
+  /* ---------- ПОРЯДОК ---------- */
+  .order-box{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+  .order-item{
+    font-family:inherit;font-size:17px;padding:12px 14px;border-radius:12px;
+    border:3px solid #ffb74d;background:#fff8e9;cursor:pointer;text-align:left;
+    display:flex;align-items:center;gap:10px;color:#1a2b3c;transition:.15s;
+    touch-action:manipulation;
+    min-height:60px;
+    width:100%;
+  }
+  .order-item:active:not(.chosen){background:#fff2d6;}
+  .order-item .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:50%;background:#f9a825;color:#fff;
+    font-weight:bold;font-size:16px;flex:0 0 auto;
+  }
+  .order-item.chosen{background:#d6f8d6;border-color:#2ecc71;}
+  .order-item.right{background:#d6f8d6;border-color:#2ecc71;}
+  .order-item.bad{background:#ffdede;border-color:#e74c3c;}
+
+  .feedback{margin-top:14px;font-size:16px;font-weight:bold;line-height:1.35;}
+  .feedback.ok{color:#1e8449;background:#e8fbee;border:3px solid #2ecc71;border-radius:12px;padding:12px 14px;}
+  .feedback.bad{color:#a5281b;background:#ffecec;border:3px solid #e74c3c;border-radius:12px;padding:12px 14px;}
+
+  #next-btn{margin-top:16px;}
+
+  /* ---------- ЭКРАН РЕЗУЛЬТАТОВ ---------- */
+  .res-title{font-size:22px;text-align:center;margin:0 0 14px;color:#2c3e50;}
+  .student-name{
+    display:block;text-align:center;font-size:26px;font-weight:bold;
+    background:#fff3b0;border:4px dashed #f39c12;border-radius:16px;
+    padding:12px 14px;margin:0 auto 16px;color:#8a5a00;
+    word-break:break-word;line-height:1.25;
+  }
+  .score-box{
+    text-align:center;font-size:44px;font-weight:bold;color:#1e8449;
+    background:#f0fff4;border:5px solid #f1c40f;border-radius:18px;
+    padding:10px 14px;margin:0 auto 18px;
+  }
+  .desc-list{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+  .desc-item{
+    border:3px solid #d6e4f0;background:#f8fbfe;padding:10px 12px;
+    font-size:14px;border-radius:12px;color:#37474f;line-height:1.35;
+  }
+  .desc-item.active{
+    border-color:#2ecc71;background:#e8fbee;
+    box-shadow:0 0 0 3px rgba(46,204,113,.2);
+  }
+  .warning{
+    margin-top:6px;text-align:center;font-size:17px;font-weight:bold;color:#e74c3c;
+    border:4px solid #e74c3c;background:#ffecec;border-radius:14px;padding:14px 10px;
+    line-height:1.3;
+  }
+
+  /* ---------- ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ (до 380px) ---------- */
+  @media (max-width:380px){
+    h1{font-size:19px;}
+    .logo{font-size:38px;}
+    .question-text{font-size:18px;}
+    .option-btn{font-size:15px;padding:10px 12px;min-height:58px;}
+    .key-icon{min-width:44px;height:44px;font-size:24px;border-bottom-width:4px;}
+    .key-label{font-size:15px;}
+    .key-sub{font-size:12px;}
+    .match-item{font-size:13px;padding:10px 6px;}
+    .order-item{font-size:15px;padding:10px 12px;}
+    .student-name{font-size:22px;}
+    .score-box{font-size:38px;}
+    .warning{font-size:15px;}
+    .feedback{font-size:14px;}
+    .big-btn{font-size:18px;}
+  }
+
+  /* ---------- БОЛЬШИЕ ЭКРАНЫ / ПЛАНШЕТЫ ---------- */
+  @media (min-width:641px){
+    body{padding:18px;}
+    .wrap{max-width:940px;}
+    .screen{padding:26px 28px 30px;border-radius:28px;}
+    .logo{font-size:46px;}
+    h1{font-size:32px;}
+    .subtitle{font-size:20px;margin-bottom:24px;}
+    #name-input{font-size:24px;padding:15px;max-width:540px;}
+    .big-btn{font-size:26px;max-width:540px;margin-left:auto;margin-right:auto;}
+    .quiz-top{gap:10px;}
+    .badge{font-size:17px;padding:6px 16px;}
+    .counter,.score-live{font-size:17px;padding:6px 14px;}
+    .who{font-size:16px;}
+    .question-text{font-size:26px;}
+    .hint{font-size:18px;}
+    .option-btn{font-size:22px;padding:16px 20px;gap:14px;min-height:auto;}
+    .key-icon{min-width:56px;height:56px;font-size:34px;padding:0 12px;}
+    .key-label{font-size:22px;}
+    .key-sub{font-size:15px;}
+    .match-item{font-size:20px;padding:14px;}
+    .order-item{font-size:22px;padding:14px 18px;}
+    .order-item .num{width:36px;height:36px;font-size:18px;}
+    .feedback{font-size:22px;padding:14px 18px;}
+    .res-title{font-size:30px;}
+    .student-name{font-size:38px;padding:14px 20px;}
+    .score-box{font-size:56px;}
+    .desc-item{font-size:19px;padding:14px 18px;}
+    .warning{font-size:26px;padding:18px;}
+  }
+
+  button{touch-action:manipulation;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ЭКРАН 1: АВТОРИЗАЦИЯ -->
+  <section id="screen-login" class="screen active">
+    <div class="logo">💡🖥️</div>
+    <h1>Тест для 3 класса</h1>
+    <p class="subtitle">«Идея для проекта» и правила набора текста</p>
+    <input id="name-input" type="text" placeholder="" autocomplete="off" spellcheck="false" autocapitalize="words" enterkeyhint="go">
+    <button id="start-btn" class="big-btn" disabled>Начать тест</button>
+  </section>
+
+  <!-- ЭКРАН ТЕСТА -->
+  <section id="screen-quiz" class="screen">
+    <div class="quiz-top">
+      <div class="badge" id="stage-badge">Этап 1</div>
+      <div class="counter" id="counter">1 / 8</div>
+      <div class="score-live" id="score-live">⭐ 0</div>
+      <div class="who" id="who"></div>
+    </div>
+    <div class="progress"><div id="progress-fill"></div></div>
+    <div id="question-area"></div>
+    <div id="feedback" class="feedback"></div>
+    <button id="next-btn" class="big-btn" style="display:none;">Далее →</button>
+  </section>
+
+  <!-- ЭКРАН РЕЗУЛЬТАТОВ -->
+  <section id="screen-result" class="screen">
+    <h1 class="res-title">🎉 Итоговый результат</h1>
+    <div class="student-name">🏅 <span id="res-name"></span></div>
+    <div class="score-box"><span id="res-score"></span></div>
+    <div class="desc-list">
+      <div class="desc-item" data-key="d10"><b>10 баллов:</b> «Отлично! Превосходно знает этапы проекта и правила работы с текстом.»</div>
+      <div class="desc-item" data-key="d89"><b>8–9 баллов:</b> «Хорошо! Отлично понимает, как планировать проект и использовать клавиши.»</div>
+      <div class="desc-item" data-key="d67"><b>6–7 баллов:</b> «Удовлетворительно! Знает основные правила, но нужно быть внимательнее.»</div>
+      <div class="desc-item" data-key="d15"><b>1–5 баллов:</b> «Повтори тему! Повтори правила набора текста и этапы проекта.»</div>
+    </div>
+    <div class="warning">⚠️ Не закрывай результат пока учитель не проверит!</div>
+  </section>
+
+</div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const STAGE1 = [
+  { type:'tf',
+    text:'Идея проекта — это то, что ты придумал и хочешь сделать.',
+    correct:'Верно' },
+
+  { type:'tf',
+    text:'Цель проекта нужна только для красоты, она ни на что не влияет.',
+    correct:'Неверно' },
+
+  { type:'mc',
+    text:'Какая клавиша делает букву заглавной (большой)?',
+    options:[
+      { icon:'⇧', label:'Shift', sub:'Шифт' },
+      { icon:'␣', label:'Пробел', sub:'Space' },
+      { icon:'⌫', label:'Backspace', sub:'Бэкспейс' },
+      { icon:'↵', label:'Enter', sub:'Энтер' }
+    ],
+    correct:'Shift' },
+
+  { type:'mc',
+    text:'Какой клавишей стереть букву СЛЕВА от курсора?',
+    options:[
+      { icon:'⌫', label:'Backspace', sub:'Бэкспейс' },
+      { icon:'␣', label:'Пробел', sub:'Space' },
+      { icon:'⇧', label:'Shift', sub:'Шифт' },
+      { icon:'⇪', label:'Caps Lock', sub:'Капс Лок' }
+    ],
+    correct:'Backspace' },
+
+  { type:'mc',
+    text:'Какая клавиша ставит пробел между словами?',
+    options:[
+      { icon:'␣', label:'Пробел', sub:'Space' },
+      { icon:'↵', label:'Enter', sub:'Энтер' },
+      { icon:'⇧', label:'Shift', sub:'Шифт' },
+      { icon:'⌫', label:'Backspace', sub:'Бэкспейс' }
+    ],
+    correct:'Пробел' },
+
+  { type:'mc',
+    text:'С чего начинается работа над проектом?',
+    options:[
+      { icon:'💡', label:'С идеи' },
+      { icon:'📦', label:'С готового ответа' },
+      { icon:'📓', label:'С оценки в дневнике' },
+      { icon:'🔔', label:'С перемены' }
+    ],
+    correct:'С идеи' },
+
+  { type:'tf',
+    text:'План проекта — это шаги, которые помогут выполнить работу по порядку.',
+    correct:'Верно' },
+
+  { type:'match',
+    text:'Соедини слово и его значение.',
+    pairs:[
+      { left:'Идея', right:'Что я придумал' },
+      { left:'Цель', right:'Чего я хочу добиться' },
+      { left:'План',  right:'Что делать по шагам' }
+    ] }
+];
+
+const STAGE2 = [
+  { type:'order',
+    text:'Расставь этапы работы над проектом по порядку.',
+    items:['Идея','Цель','План','Выполнение'],
+    correct:['Идея','Цель','План','Выполнение'] },
+
+  { type:'mc',
+    text:'Какая клавиша делает ВСЕ буквы БОЛЬШИМИ (заглавными)?',
+    options:[
+      { icon:'⇪', label:'Caps Lock', sub:'Капс Лок' },
+      { icon:'⇧', label:'Shift', sub:'Шифт' },
+      { icon:'␣', label:'Пробел', sub:'Space' },
+      { icon:'⌫', label:'Backspace', sub:'Бэкспейс' }
+    ],
+    correct:'Caps Lock' }
+];
+
+/* ================= СОСТОЯНИЕ ================= */
+const state = { name:'', stage:1, index:0, score:0 };
+let answered = false;
+
+const $ = id => document.getElementById(id);
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function currentList(){ return state.stage === 1 ? STAGE1 : STAGE2; }
+
+/* ================= ЖИВОЙ СЧЁТЧИК ================= */
+function updateLiveScore(bump){
+  const el = $('score-live');
+  el.textContent = '⭐ ' + state.score;
+  if(bump){
+    el.classList.add('bump');
+    setTimeout(() => el.classList.remove('bump'), 350);
+  }
+}
+
+/* ================= ЭКРАН 1 ================= */
+const nameInput = $('name-input');
+const startBtn  = $('start-btn');
+
+nameInput.addEventListener('input', () => {
+  startBtn.disabled = nameInput.value.trim().length === 0;
+});
+
+nameInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && !startBtn.disabled) startBtn.click();
+});
+
+startBtn.addEventListener('click', () => {
+  const v = nameInput.value.trim();
+  if(!v) return;
+  state.name = v;
+  state.stage = 1;
+  state.index = 0;
+  state.score = 0;
+  $('who').textContent = 'Ученик: ' + state.name;
+  updateLiveScore(false);
+  showScreen('screen-quiz');
+  renderQuestion();
+});
+
+/* ================= ОТРИСОВКА ================= */
+function updateHeader(){
+  const list = currentList();
+  $('stage-badge').textContent = state.stage === 1 ? 'Этап 1' : 'Этап 2';
+  $('counter').textContent = (state.index + 1) + ' / ' + list.length;
+  $('progress-fill').style.width = (state.index / list.length * 100) + '%';
+}
+
+function setFeedback(ok, text){
+  const fb = $('feedback');
+  fb.className = 'feedback ' + (ok ? 'ok' : 'bad');
+  fb.textContent = text;
+}
+
+function showNext(){
+  const list = currentList();
+  const btn = $('next-btn');
+  if(state.stage === 1 && state.index === list.length - 1){
+    btn.textContent = 'Перейти к этапу 2 →';
+  } else if(state.stage === 2 && state.index === list.length - 1){
+    btn.textContent = 'Показать результат 🏆';
+  } else {
+    btn.textContent = 'Далее →';
+  }
+  btn.style.display = 'block';
+}
+
+function buildOptionContent(opt){
+  const wrap = document.createElement('span');
+  wrap.style.display = 'flex';
+  wrap.style.alignItems = 'center';
+  wrap.style.gap = '12px';
+  wrap.style.width = '100%';
+
+  if(typeof opt === 'string'){
+    const t = document.createElement('span');
+    t.className = 'key-label';
+    t.textContent = opt;
+    wrap.appendChild(t);
+    return wrap;
+  }
+
+  const iconEl = document.createElement('span');
+  iconEl.className = 'key-icon';
+  iconEl.textContent = opt.icon;
+  wrap.appendChild(iconEl);
+
+  const textWrap = document.createElement('span');
+  textWrap.style.display = 'flex';
+  textWrap.style.flexDirection = 'column';
+  textWrap.style.minWidth = '0';
+  textWrap.style.flex = '1';
+
+  const labelEl = document.createElement('span');
+  labelEl.className = 'key-label';
+  labelEl.textContent = opt.label;
+  textWrap.appendChild(labelEl);
+
+  if(opt.sub){
+    const subEl = document.createElement('span');
+    subEl.className = 'key-sub';
+    subEl.textContent = opt.sub;
+    textWrap.appendChild(subEl);
+  }
+  wrap.appendChild(textWrap);
+  return wrap;
+}
+
+function renderQuestion(){
+  answered = false;
+  const list = currentList();
+  const q = list[state.index];
+
+  updateHeader();
+  updateLiveScore(false);
+
+  const area = $('question-area');
+  area.innerHTML = '';
+
+  const fb = $('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  $('next-btn').style.display = 'none';
+
+  const title = document.createElement('div');
+  title.className = 'question-text';
+  title.textContent = q.text;
+  area.appendChild(title);
+
+  /* --- Верно/Неверно и выбор ответа --- */
+  if(q.type === 'mc' || q.type === 'tf'){
+    const opts = q.type === 'tf'
+      ? [ { icon:'✅', label:'Верно' }, { icon:'❌', label:'Неверно' } ]
+      : q.options;
+    const box = document.createElement('div');
+    box.className = 'options';
+
+    shuffle(opts).forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'option-btn';
+      b.appendChild(buildOptionContent(opt));
+
+      const optKey = (typeof opt === 'string') ? opt : opt.label;
+
+      b.addEventListener('click', () => {
+        if(answered) return;
+        answered = true;
+        const ok = (optKey === q.correct);
+        [...box.children].forEach(c => c.disabled = true);
+        if(ok){
+          b.classList.add('correct');
+          state.score++;
+          updateLiveScore(true);
+          setFeedback(true, 'Молодец! Верно! 🎉');
+        } else {
+          b.classList.add('wrong');
+          [...box.children].forEach(c => {
+            const content = c.querySelector('.key-label');
+            if(content && content.textContent === q.correct) c.classList.add('correct');
+          });
+          setFeedback(false, 'Правильный ответ: «' + q.correct + '»');
+        }
+        showNext();
+      });
+      box.appendChild(b);
+    });
+
+    area.appendChild(box);
+  }
+
+  /* --- Сопоставление --- */
+  else if(q.type === 'match'){
+    const hint = document.createElement('div');
+    hint.className = 'hint';
+    hint.textContent = 'Нажми на слово слева, потом на значение справа.';
+    area.appendChild(hint);
+
+    const grid = document.createElement('div');
+    grid.className = 'match-grid';
+    const leftCol = document.createElement('div');
+    leftCol.className = 'match-col';
+    const rightCol = document.createElement('div');
+    rightCol.className = 'match-col';
+
+    const answerFor = {};
+    q.pairs.forEach(p => { answerFor[p.left] = p.right; });
+
+    let selLeft = null;
+    let matched = 0;
+
+    shuffle(q.pairs.map(p => p.left)).forEach(text => {
+      const b = document.createElement('button');
+      b.className = 'match-item';
+      b.textContent = text;
+      b.addEventListener('click', () => {
+        if(answered || b.classList.contains('done')) return;
+        if(selLeft) selLeft.classList.remove('selected');
+        selLeft = b;
+        b.classList.add('selected');
+      });
+      leftCol.appendChild(b);
+    });
+
+    shuffle(q.pairs.map(p => p.right)).forEach(text => {
+      const b = document.createElement('button');
+      b.className = 'match-item';
+      b.textContent = text;
+      b.addEventListener('click', () => {
+        if(answered || b.classList.contains('done')) return;
+        if(!selLeft){
+          setFeedback(false, 'Сначала выбери слово слева 👈');
+          return;
+        }
+        if(answerFor[selLeft.textContent] === text){
+          selLeft.classList.remove('selected');
+          selLeft.classList.add('done');
+          b.classList.add('done');
+          selLeft = null;
+          matched++;
+          if(matched === q.pairs.length){
+            answered = true;
+            state.score++;
+            updateLiveScore(true);
+            setFeedback(true, 'Отлично! Все пары верны! 🎉');
+            showNext();
+          } else {
+            setFeedback(true, 'Верно! 👍');
+          }
+        } else {
+          const l = selLeft;
+          l.classList.remove('selected');
+          l.classList.add('flash');
+          b.classList.add('flash');
+          selLeft = null;
+          setTimeout(() => {
+            l.classList.remove('flash');
+            b.classList.remove('flash');
+          }, 600);
+          setFeedback(false, 'Не подходит. Попробуй ещё раз!');
+        }
+      });
+      rightCol.appendChild(b);
+    });
+
+    grid.appendChild(leftCol);
+    grid.appendChild(rightCol);
+    area.appendChild(grid);
+  }
+
+  /* --- Порядок --- */
+  else if(q.type === 'order'){
+    const hint = document.createElement('div');
+    hint.className = 'hint';
+    hint.textContent = 'Нажимай на этапы по порядку: 1-й, потом 2-й и так далее.';
+    area.appendChild(hint);
+
+    const box = document.createElement('div');
+    box.className = 'order-box';
+    const chosen = [];
+
+    const checkBtn = document.createElement('button');
+    checkBtn.className = 'big-btn';
+    checkBtn.textContent = 'Проверить порядок';
+    checkBtn.disabled = true;
+
+    shuffle(q.items).forEach(text => {
+      const b = document.createElement('button');
+      b.className = 'order-item';
+      b.dataset.text = text;
+      b.innerHTML = '<span class="num">?</span><span>' + text + '</span>';
+      b.addEventListener('click', () => {
+        if(answered || b.classList.contains('chosen')) return;
+        chosen.push(b);
+        b.classList.add('chosen');
+        b.querySelector('.num').textContent = chosen.length;
+        if(chosen.length === q.items.length) checkBtn.disabled = false;
+      });
+      box.appendChild(b);
+    });
+
+    checkBtn.addEventListener('click', () => {
+      if(answered) return;
+      answered = true;
+      checkBtn.disabled = true;
+      const user = chosen.map(b => b.dataset.text);
+      const ok = user.join('|') === q.correct.join('|');
+      if(ok){
+        state.score++;
+        updateLiveScore(true);
+        chosen.forEach(b => b.classList.add('right'));
+        setFeedback(true, 'Верно! Ты знаешь порядок этапов! 🎉');
+      } else {
+        chosen.forEach(b => b.classList.add('bad'));
+        setFeedback(false, 'Правильный порядок: ' + q.correct.join(' → '));
+      }
+      showNext();
+    });
+
+    area.appendChild(box);
+    area.appendChild(checkBtn);
+  }
+}
+
+/* ================= ПЕРЕХОДЫ ================= */
+$('next-btn').addEventListener('click', () => {
+  const list = currentList();
+  if(state.index < list.length - 1){
+    state.index++;
+    renderQuestion();
+  } else if(state.stage === 1){
+    state.stage = 2;
+    state.index = 0;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+});
+
+/* ================= РЕЗУЛЬТАТ ================= */
+function showResult(){
+  const s = state.score;
+  $('res-name').textContent = state.name;
+  $('res-score').textContent = s + ' из 10';
+
+  let key;
+  if(s === 10) key = 'd10';
+  else if(s >= 8) key = 'd89';
+  else if(s >= 6) key = 'd67';
+  else key = 'd15';
+
+  document.querySelectorAll('.desc-item').forEach(el => el.classList.remove('active'));
+  const row = document.querySelector('.desc-item[data-key="' + key + '"]');
+  if(row) row.classList.add('active');
+
+  showScreen('screen-result');
+}
+</script>
+</body>
+</html>
